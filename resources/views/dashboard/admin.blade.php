@@ -1,73 +1,80 @@
-{{-- resources/views/dashboard/admin_dashboard.blade.php --}}
-
 <x-app-layout>
-    <div class="py-12">
-        <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-900 overflow-hidden shadow-xl sm:rounded-lg">
-                <div class="p-8 text-gray-800 dark:text-gray-100">
+    <div class="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black py-14 px-6 text-white">
+        <div class="max-w-7xl mx-auto space-y-14">
 
-                    {{-- Header Selamat Datang --}}
-                    <div class="mb-8">
-                        <h2 class="text-3xl font-extrabold text-blue-800 dark:text-blue-300">Halo, {{ Auth::user()->name }} 👋</h2>
-                        <p class="text-gray-600 dark:text-gray-400 mt-2">Selamat datang di panel manajemen berita!</p>
-                    </div>
+            {{-- Header Welcome --}}
+            <div class="text-center space-y-3">
+                <h1 class="text-4xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-sky-500 animate-pulse">
+                    Selamat Datang, {{ Auth::user()->name }} 👋
+                </h1>
+                <p class="text-lg text-gray-300">Kelola berita, pantau perkembangan informasi dengan mudah dan cepat.</p>
+            </div>
 
-                    {{-- Akses Cepat --}}
-                    <div class="mb-10">
-                        <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Akses Cepat</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                            <a href="{{ route('beritas.index') }}"
-                                class="bg-blue-100 dark:bg-blue-800 text-blue-900 dark:text-white rounded-lg p-6 shadow-md hover:shadow-lg transition duration-300">
-                                <div class="flex items-center justify-center mb-3">
-                                    <i class="fas fa-newspaper text-3xl"></i>
-                                </div>
-                                <h4 class="text-center font-bold text-lg">Lihat Semua Berita</h4>
-                            </a>
-
-                            @if (Auth::user()->role === 'admin')
-                                <a href="{{ route('beritas.create') }}"
-                                    class="bg-green-100 dark:bg-green-800 text-green-900 dark:text-white rounded-lg p-6 shadow-md hover:shadow-lg transition duration-300">
-                                    <div class="flex items-center justify-center mb-3">
-                                        <i class="fas fa-plus text-3xl"></i>
-                                    </div>
-                                    <h4 class="text-center font-bold text-lg">Tulis Berita Baru</h4>
-                                </a>
-                            @endif
+            {{-- Akses Cepat --}}
+            <div class="flex justify-center">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-10 w-full max-w-2xl text-center">
+                    {{-- Lihat Semua Berita --}}
+                    <a href="{{ route('beritas.index') }}"
+                       class="group rounded-2xl p-6 shadow-lg hover:shadow-2xl transition duration-300 transform hover:-translate-y-1 bg-gradient-to-r from-blue-700 to-blue-500 hover:brightness-110">
+                        <div class="flex flex-col items-center text-white">
+                            <i class="fas fa-newspaper text-4xl mb-3"></i>
+                            <span class="text-lg font-semibold">Lihat Semua Berita</span>
                         </div>
-                    </div>
+                    </a>
 
-                    {{-- Berita Terbaru --}}
-                    <div>
-                        <h3 class="text-2xl font-semibold mb-6 text-gray-800 dark:text-gray-200">Berita Terbaru</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            @forelse ($beritas as $berita)
-                                <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
-                                    @if ($berita->foto)
-                                        <img src="{{ Storage::url($berita->foto) }}" alt="{{ $berita->judul }}"
-                                            class="w-full h-44 object-cover">
-                                    @else
-                                        <div class="w-full h-44 flex items-center justify-center bg-gray-200 dark:bg-gray-700 text-gray-500">
-                                            Tidak ada gambar
-                                        </div>
-                                    @endif
-
-                                    <div class="p-4">
-                                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white truncate">{{ $berita->judul }}</h4>
-                                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Ditulis oleh <span class="font-medium">{{ $berita->penulis }}</span> · {{ $berita->tanggal_publikasi->diffForHumans() }}</p>
-                                        <a href="{{ route('beritas.show', $berita->id) }}"
-                                            class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
-                                            Lihat Selengkapnya &rarr;
-                                        </a>
-                                    </div>
-                                </div>
-                            @empty
-                                <p class="text-gray-600 dark:text-gray-400">Tidak ada berita yang tersedia saat ini.</p>
-                            @endforelse
-                        </div>
-                    </div>
-
+                    {{-- Tulis Berita Baru (Admin Only) --}}
+                    @if (Auth::user()->role === 'admin')
+                        <a href="{{ route('beritas.create') }}"
+                           class="group rounded-2xl p-6 shadow-lg hover:shadow-2xl transition duration-300 transform hover:-translate-y-1 bg-gradient-to-r from-sky-600 to-cyan-400 hover:brightness-110">
+                            <div class="flex flex-col items-center text-white">
+                                <i class="fas fa-pen-nib text-4xl mb-3"></i>
+                                <span class="text-lg font-semibold">Tulis Berita Baru</span>
+                            </div>
+                        </a>
+                    @endif
                 </div>
             </div>
+
+            {{-- Berita Terbaru --}}
+            <div>
+                <h2 class="text-2xl font-bold text-center text-white border-b border-gray-700 pb-3">
+                    🗞️ Berita Terbaru
+                </h2>
+
+                @if ($beritas->isEmpty())
+                    <p class="text-center text-gray-400 mt-6">Belum ada berita yang dipublikasikan.</p>
+                @else
+                    <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mt-8">
+                        @foreach ($beritas as $berita)
+                            <div class="bg-white/5 backdrop-blur border border-white/10 rounded-2xl overflow-hidden shadow hover:shadow-xl transition-all duration-300">
+                                @if ($berita->foto)
+                                    <img src="{{ Storage::url($berita->foto) }}" alt="{{ $berita->judul }}"
+                                         class="w-full h-48 object-cover object-center">
+                                @else
+                                    <div class="w-full h-48 bg-gray-700 flex items-center justify-center text-gray-400">
+                                        Tidak ada gambar
+                                    </div>
+                                @endif
+
+                                <div class="p-5">
+                                    <h3 class="text-lg font-semibold text-white truncate mb-2">
+                                        {{ $berita->judul }}
+                                    </h3>
+                                    <p class="text-sm text-gray-300 mb-3">
+                                        Oleh <span class="text-blue-300 font-medium">{{ $berita->penulis }}</span>
+                                        · {{ $berita->tanggal_publikasi->diffForHumans() }}
+                                    </p>
+                                    <a href="{{ route('beritas.show', $berita->id) }}"
+                                       class="inline-block text-blue-400 hover:text-blue-200 font-medium text-sm transition">
+                                        Baca Selengkapnya →
+                                    </a>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+
         </div>
     </div>
 </x-app-layout>
